@@ -82,6 +82,8 @@ def ensure_bag(bag_name, store, policy_dict={}, description='', owner=None):
     """
     bag = Bag(bag_name)
     try:
+        # when skinny is set we don't read the tiddlers
+        bag.skinny = True
         bag = store.get(bag)
     except NoBagError:
         bag.desc = description
@@ -105,3 +107,11 @@ def replace_handler(selector, path, new_handler):
     for index, (regex, handler) in enumerate(selector.mappings):
         if regex.match(path) is not None:
             selector.mappings[index] = (regex, new_handler)
+
+
+def get_store(config):
+    """
+    Given the config, return a reference to the store.
+    """
+    from tiddlyweb.store import Store
+    return Store(config['server_store'][0], {'tiddlyweb.config': config})
