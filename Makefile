@@ -14,4 +14,4 @@ dist: test
 
 upload: test
 	python setup.py sdist upload
-	scp dist/tiddlywebplugins-*.gz cdent@peermore.com:public_html/peermore.com/tiddlyweb/dist
+	scp dist/tiddlywebplugins-*.gz cdent@tiddlyweb.peermore.com:public_html/tiddlyweb.peermore.com/dist
