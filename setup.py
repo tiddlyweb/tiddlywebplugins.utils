@@ -5,10 +5,10 @@ Setup.py for tiddlyweb-plugins
 import os
 from setuptools import setup, find_packages
 
-VERSION = 0.7
+VERSION = 0.9
 
 setup(
-        name = 'tiddlywebplugins',
+        name = 'tiddlywebplugins.utils',
         namespace_packages = ['tiddlywebplugins'],
         long_description=file(os.path.join(os.path.dirname(__file__), 'README')).read(),
         version = VERSION,
