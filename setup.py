@@ -1,5 +1,5 @@
 """
-Setup.py for tiddlyweb-plugins
+Setup.py for tiddlywebplugins
 """
 
 import os
