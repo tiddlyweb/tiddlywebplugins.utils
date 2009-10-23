@@ -109,6 +109,17 @@ def replace_handler(selector, path, new_handler):
             selector.mappings[index] = (regex, new_handler)
 
 
+def remove_handler(selector, path):
+    """
+    Remove an existing path handler in the selector
+    map. This disables that route, and will cause a
+    404 to be returned for that path.
+    """
+    for index, (regex, handler) in enumerate(selector.mappings):
+        if regex.match(path) is not None:
+            del selector.mappings[index]
+
+
 def get_store(config):
     """
     Given the config, return a reference to the store.
