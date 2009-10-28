@@ -9,9 +9,9 @@ clean:
 	rm -r dist
 	rm -r tiddlyweb_plugins.egg-info
 
-dist: test
+dist:
 	python setup.py sdist
 
-upload: test
+upload:
 	python setup.py sdist upload
 	scp -P 8022 dist/tiddlywebplugins*.gz cdent@tiddlyweb.peermore.com:public_html/tiddlyweb.peermore.com/dist

@@ -109,6 +109,41 @@ def replace_handler(selector, path, new_handler):
             selector.mappings[index] = (regex, new_handler)
 
 
+def map_to_tiddler(selector, path, bag=None, recipe=None):
+    """
+    WARNING: NOT YET WELL TESTED!
+
+    Map the route given in path to the default routing for
+    getting, putting and deleting a tiddler. The provided bag
+    or recipe name is used to disambiguate the mapping.
+
+    The path must include {tiddler_name} in it somewhere. Examples:
+
+       /{tiddler_name}
+       /people/{tiddler_name}
+       /a/long/path/to/something/{tiddler_name}
+       /{tiddler_name}/something/here
+    """
+    from tiddlyweb.web.handler.tiddler import get, put, delete
+
+    def handler(environ, start_response):
+        if bag:
+            environ['wsgiorg.routing_args'][1]['bag_name'] = bag
+        elif recipe:
+            environ['wsgiorg.routing_args'][1]['recipe_name'] = recipe
+        else:
+            return selector.not_found(environ, start_response)
+        if environ['REQUEST_METHOD'] == 'GET':
+            return get(environ, start_response)
+        elif environ['REQUEST_METHOD'] == 'PUT':
+            return put(environ, start_response)
+        elif environ['REQUEST_METHOD'] == 'DELETE':
+            return delete(environ, start_response)
+        else:
+            return selector.method_not_allowed(environ, start_response)
+    selector.add(path, GET=handler, PUT=handler, DELETE=handler)
+
+
 def remove_handler(selector, path):
     """
     Remove an existing path handler in the selector
