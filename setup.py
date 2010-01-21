@@ -1,11 +1,11 @@
 """
-Setup.py for tiddlywebplugins
+Setup.py for tiddlywebplugins.utils
 """
 
 import os
 from setuptools import setup, find_packages
 
-VERSION = '0.12'
+VERSION = '0.14'
 
 setup(
         namespace_packages = ['tiddlywebplugins'],
@@ -18,5 +18,6 @@ setup(
         url = 'http://pypi.python.org/pypi/tiddlywebplugins.utils',
         packages = find_packages(),
         platforms = 'Posix; MacOS X; Windows',
-        install_requires = ['setuptools', 'tiddlyweb'],
+        install_requires = ['tiddlyweb>=0.9.96'],
+        zip_safe = False,
         )

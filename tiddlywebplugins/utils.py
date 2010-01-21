@@ -160,4 +160,6 @@ def get_store(config):
     Given the config, return a reference to the store.
     """
     from tiddlyweb.store import Store
-    return Store(config['server_store'][0], {'tiddlyweb.config': config})
+    return Store(config['server_store'][0],
+            config['server_store'][1],
+            {'tiddlyweb.config': config})
