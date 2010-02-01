@@ -5,7 +5,7 @@ Setup.py for tiddlywebplugins.utils
 import os
 from setuptools import setup, find_packages
 
-VERSION = '0.14'
+VERSION = '0.15'
 
 setup(
         namespace_packages = ['tiddlywebplugins'],
