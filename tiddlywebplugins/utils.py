@@ -6,6 +6,8 @@ Essentially this is a way to raise duplication to a common
 core without encumbering the TiddlyWeb core.
 """
 
+import os
+
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import UserRequiredError
 from tiddlyweb.store import NoBagError
