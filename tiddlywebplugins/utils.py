@@ -176,4 +176,4 @@ def resource_filename(package_name, resource_path):
 
     resource_path is a Unix-style relative file path (using forward slashes)
     """
-    return "file://%s" % os.path.join(package_name, *resource_path.split("/"))
+    return os.path.join(package_name, *resource_path.split("/"))
