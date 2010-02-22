@@ -5,12 +5,15 @@
 .PHONY: test dist upload
 
 clean:
-	find . -name "*.pyc" |xargs rm
-	rm -r dist
-	rm -r tiddlyweb_plugins.egg-info
+	find . -name "*.pyc" |xargs rm || true
+	rm -r dist || true
+	rm -r tiddlyweb_plugins.egg-info || true
 
-dist:
+test:
+	py.test -svx test
+
+dist: test
 	python setup.py sdist
 
-upload:
+upload: test
 	python setup.py sdist upload

@@ -19,7 +19,7 @@ def entitle(title):
     """
     def entangle(f):
         def entitle(environ, start_response, *args, **kwds):
-            output = f(environ, start_response)
+            output = f(environ, start_response, *args, **kwds)
             environ['tiddlyweb.title'] = title
             return output
         return entitle
@@ -32,7 +32,7 @@ def do_html():
     """
     def entangle(f):
         def do_html(environ, start_response, *args, **kwds):
-            output = f(environ, start_response)
+            output = f(environ, start_response, *args, **kwds)
             start_response('200 OK', [
                 ('Content-Type', 'text/html; charset=UTF-8')
                 ])
@@ -50,7 +50,7 @@ def require_role(role):
         def require_role(environ, start_response, *args, **kwds):
             try:
                 if role in environ['tiddlyweb.usersign']['roles']:
-                    return f(environ, start_response)
+                    return f(environ, start_response, *args, **kwds)
                 else:
                     raise(UserRequiredError, 'insufficient permissions')
             except KeyError:
@@ -69,7 +69,7 @@ def require_any_user():
                 if environ['tiddlyweb.usersign']['name'] == 'GUEST':
                     raise(UserRequiredError, 'user must be logged in')
                 else:
-                    return f(environ, start_response)
+                    return f(environ, start_response, *args, **kwds)
             except KeyError:
                 raise(UserRequiredError, 'user must be logged in')
         return require_any_user
