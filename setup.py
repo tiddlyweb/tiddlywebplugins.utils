@@ -16,7 +16,7 @@ setup(
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://pypi.python.org/pypi/tiddlywebplugins.utils',
-        packages = find_packages(),
+        packages = find_packages(exclude='test'),
         platforms = 'Posix; MacOS X; Windows',
         install_requires = ['tiddlyweb>=0.9.96'],
         zip_safe = False,
