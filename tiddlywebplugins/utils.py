@@ -4,6 +4,8 @@ in TiddlyWeb a bit more sensible.
 
 Essentially this is a way to raise duplication to a common
 core without encumbering the TiddlyWeb core.
+
+See also http://tiddlyweb.com and http://github.com/tiddlyweb
 """
 
 import os
@@ -17,12 +19,16 @@ def entitle(title):
     """
     Decorator that sets tiddlyweb.title in environ.
     """
-    def entangle(f):
-        def entitle(environ, start_response, *args, **kwds):
-            output = f(environ, start_response, *args, **kwds)
+
+    def entangle(handler):
+
+        def _entitle(environ, start_response, *args, **kwds):
+            output = handler(environ, start_response, *args, **kwds)
             environ['tiddlyweb.title'] = title
             return output
-        return entitle
+
+        return _entitle
+
     return entangle
 
 
@@ -30,14 +36,17 @@ def do_html():
     """
     Decorator that makes sure we are sending text/html.
     """
-    def entangle(f):
-        def do_html(environ, start_response, *args, **kwds):
-            output = f(environ, start_response, *args, **kwds)
+
+    def entangle(handler):
+
+        def _do_html(environ, start_response, *args, **kwds):
+            output = handler(environ, start_response, *args, **kwds)
             start_response('200 OK', [
-                ('Content-Type', 'text/html; charset=UTF-8')
-                ])
+                ('Content-Type', 'text/html; charset=UTF-8')])
             return output
-        return do_html
+
+        return _do_html
+
     return entangle
 
 
@@ -46,16 +55,20 @@ def require_role(role):
     Decorator that requires the current user has role <role>.
     """
     role = unicode(role)
-    def entangle(f):
-        def require_role(environ, start_response, *args, **kwds):
+
+    def entangle(handler):
+
+        def _require_role(environ, start_response, *args, **kwds):
             try:
                 if role in environ['tiddlyweb.usersign']['roles']:
-                    return f(environ, start_response, *args, **kwds)
+                    return handler(environ, start_response, *args, **kwds)
                 else:
                     raise UserRequiredError('insufficient permissions')
             except KeyError:
                 raise UserRequiredError('insufficient permissions')
-        return require_role
+
+        return _require_role
+
     return entangle
 
 
@@ -63,29 +76,34 @@ def require_any_user():
     """
     Decorator that requires the current user be someone other than 'GUEST'.
     """
-    def entangle(f):
-        def require_any_user(environ, start_response, *args, **kwds):
+
+    def entangle(handler):
+
+        def _require_any_user(environ, start_response, *args, **kwds):
             try:
                 if environ['tiddlyweb.usersign']['name'] == 'GUEST':
                     raise UserRequiredError('user must be logged in')
                 else:
-                    return f(environ, start_response, *args, **kwds)
+                    return handler(environ, start_response, *args, **kwds)
             except KeyError:
                 raise UserRequiredError('user must be logged in')
-        return require_any_user
+
+        return _require_any_user
+
     return entangle
 
 
-def ensure_bag(bag_name, store, policy_dict={}, description='', owner=None):
+def ensure_bag(bag_name, store, policy_dict=None, description='', owner=None):
     """
     Ensure that bag with name bag_name exists in store.
     If not, create it with owner, policy and description optionally
     provided. In either case return the bag object.
     """
+    if policy_dict is None:
+        policy_dict = {}
     bag = Bag(bag_name)
+
     try:
-        # when skinny is set we don't read the tiddlers
-        bag.skinny = True
         bag = store.get(bag)
     except NoBagError:
         bag.desc = description
@@ -95,6 +113,7 @@ def ensure_bag(bag_name, store, policy_dict={}, description='', owner=None):
         for key in policy_dict:
             bag.policy.__setattr__(key, policy_dict[key])
         store.put(bag)
+
     return bag
 
 
@@ -106,15 +125,13 @@ def replace_handler(selector, path, new_handler):
     This makes replacing easy. Courtesy of arno,
     the selector author.
     """
-    for index, (regex, handler) in enumerate(selector.mappings):
+    for index, (regex, _) in enumerate(selector.mappings):
         if regex.match(path) is not None:
             selector.mappings[index] = (regex, new_handler)
 
 
 def map_to_tiddler(selector, path, bag=None, recipe=None):
     """
-    WARNING: NOT YET WELL TESTED!
-
     Map the route given in path to the default routing for
     getting, putting and deleting a tiddler. The provided bag
     or recipe name is used to disambiguate the mapping.
@@ -143,6 +160,7 @@ def map_to_tiddler(selector, path, bag=None, recipe=None):
             return delete(environ, start_response)
         else:
             return selector.method_not_allowed(environ, start_response)
+
     selector.add(path, GET=handler, PUT=handler, DELETE=handler)
 
 
@@ -152,7 +170,7 @@ def remove_handler(selector, path):
     map. This disables that route, and will cause a
     404 to be returned for that path.
     """
-    for index, (regex, handler) in enumerate(selector.mappings):
+    for index, (regex, _) in enumerate(selector.mappings):
         if regex.match(path) is not None:
             del selector.mappings[index]
 
@@ -169,8 +187,8 @@ def get_store(config):
 
 def resource_filename(package_name, resource_path):
     """
-    simple replacement for resource_filename when pkg_resources is not available
-    assumes package is available in the current working directory
+    simple replacement for resource_filename when pkg_resources is not
+    available assumes package is available in the current working directory
 
     This is required primarily on Google App Engine.
 
