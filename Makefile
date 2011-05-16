@@ -15,5 +15,5 @@ test:
 dist: test
 	python setup.py sdist
 
-upload: test
+release: test
 	python setup.py sdist upload
