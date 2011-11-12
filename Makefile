@@ -7,7 +7,7 @@
 clean:
 	find . -name "*.pyc" |xargs rm || true
 	rm -r dist || true
-	rm -r tiddlyweb_plugins.egg-info || true
+	rm -r tiddlywebplugins.utils.egg-info || true
 
 test:
 	py.test -svx test

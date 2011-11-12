@@ -1,15 +1,14 @@
-tiddlywebplugins.utils provides a suite of tools that
-make creating and handling plugins in TiddlyWeb a bit
-more sensible.
+tiddlywebplugins.utils provides a suite of tools that make creating and
+handling plugins in TiddlyWeb a bit more sensible.
 
-Essentially the utilities raise duplication to a common
-core without encumbering the TiddlyWeb core.
+Essentially the utilities raise duplication to a common core without
+encumbering the TiddlyWeb core.
 
-It also provides the start of a virtual namespace for mature
+It also provides a virtual namespace, tiddlywebplugins, for other
 TiddlyWeb plugins.
 
-Contact <cdent@peermore.com> or the TiddlyWeb Google
-Group for more information:
+Contact <cdent@peermore.com> or the TiddlyWeb Google Group for more
+information:
 
     http://groups.google.com/group/tiddlyweb
 
