@@ -54,7 +54,10 @@ def require_role(role):
     """
     Decorator that requires the current user has role <role>.
     """
-    role = unicode(role)
+    try:
+        role = unicode(role)
+    except NameError:
+        pass
 
     def entangle(handler):
 

@@ -5,12 +5,12 @@ Setup.py for tiddlywebplugins.utils
 import os
 from setuptools import setup, find_packages
 
-VERSION = '1.2'
+VERSION = '1.3'
 
 setup(
         namespace_packages = ['tiddlywebplugins'],
         name = 'tiddlywebplugins.utils',
-        long_description=file(os.path.join(os.path.dirname(__file__), 'README')).read(),
+        long_description=open(os.path.join(os.path.dirname(__file__), 'README')).read(),
         version = VERSION,
         description = 'Tools and methods for managing TiddlyWeb plugins',
         author = 'Chris Dent',
