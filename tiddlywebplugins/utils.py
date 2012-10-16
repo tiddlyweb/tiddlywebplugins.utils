@@ -63,11 +63,12 @@ def require_role(role):
 
         def _require_role(environ, start_response, *args, **kwds):
             try:
-                if role in environ['tiddlyweb.usersign']['roles']:
-                    return handler(environ, start_response, *args, **kwds)
-                else:
-                    raise UserRequiredError('insufficient permissions')
+                roles = environ['tiddlyweb.usersign']['roles']
             except KeyError:
+                raise UserRequiredError('insufficient permissions')
+            if role in roles:
+                return handler(environ, start_response, *args, **kwds)
+            else:
                 raise UserRequiredError('insufficient permissions')
 
         return _require_role
@@ -84,12 +85,14 @@ def require_any_user():
 
         def _require_any_user(environ, start_response, *args, **kwds):
             try:
-                if environ['tiddlyweb.usersign']['name'] == 'GUEST':
-                    raise UserRequiredError('user must be logged in')
-                else:
-                    return handler(environ, start_response, *args, **kwds)
+                username = environ['tiddlyweb.usersign']['name']
             except KeyError:
                 raise UserRequiredError('user must be logged in')
+                
+            if username == 'GUEST':
+                raise UserRequiredError('user must be logged in')
+            else:
+                return handler(environ, start_response, *args, **kwds)
 
         return _require_any_user
 
