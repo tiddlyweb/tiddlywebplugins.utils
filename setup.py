@@ -5,7 +5,7 @@ Setup.py for tiddlywebplugins.utils
 import os
 from setuptools import setup, find_packages
 
-VERSION = '1.4'
+VERSION = '1.5'
 
 setup(
         namespace_packages = ['tiddlywebplugins'],
@@ -16,7 +16,7 @@ setup(
         author = 'Chris Dent',
         author_email = 'cdent@peermore.com',
         url = 'http://pypi.python.org/pypi/tiddlywebplugins.utils',
-        packages = find_packages(exclude='test'),
+        packages = find_packages(exclude=['test']),
         platforms = 'Posix; MacOS X; Windows',
         install_requires = ['tiddlyweb>=1.2.0'],
         zip_safe = False,
