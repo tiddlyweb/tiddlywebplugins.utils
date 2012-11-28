@@ -17,7 +17,8 @@ from tiddlyweb.store import NoBagError
 
 def entitle(title):
     """
-    Decorator that sets tiddlyweb.title in environ.
+    Decorator that sets tiddlyweb.title in environ, which
+    is used when HTMLPresenter is engaged.
     """
 
     def entangle(handler):
