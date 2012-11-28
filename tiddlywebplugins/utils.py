@@ -89,7 +89,7 @@ def require_any_user():
                 username = environ['tiddlyweb.usersign']['name']
             except KeyError:
                 raise UserRequiredError('user must be logged in')
-                
+
             if username == 'GUEST':
                 raise UserRequiredError('user must be logged in')
             else:
@@ -157,7 +157,7 @@ def make_root_handler(config, recipe='default', bag=None,
         from tiddlyweb.web.handler.recipe import get_tiddlers
         container_name = 'recipe_name'
         container = recipe
-        
+
     def get(environ, start_response):
         environ['wsgiorg.routing_args'][1][container_name] = container
         environ['tiddlyweb.type'] = mime_type
