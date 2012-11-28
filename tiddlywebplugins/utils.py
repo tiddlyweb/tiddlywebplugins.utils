@@ -137,6 +137,35 @@ def replace_handler(selector, path, new_handler):
             selector.mappings[index] = (regex, new_handler)
 
 
+def make_root_handler(config, recipe='default', bag=None,
+        mime_type='text/x-tiddlywiki'):
+    """
+    Replace the '/' handler with a call to load some tiddlers
+    from a named recipe or bag in a representation defined by
+    mime_type. The defaults are set to load the default recipe
+    as a tiddlywiki, called in plugin init() as:
+
+    `make_root_handler(config)`
+
+    This is a common request.
+    """
+    if bag:
+        from tiddlyweb.web.handler.bag import get_tiddlers
+        container_name = 'bag_name'
+        container = bag
+    else:
+        from tiddlyweb.web.handler.recipe import get_tiddlers
+        container_name = 'recipe_name'
+        container = recipe
+        
+    def get(environ, start_response):
+        environ['wsgiorg.routing_args'][1][container_name] = container
+        environ['tiddlyweb.type'] = mime_type
+        return get_tiddlers(environ, start_response)
+
+    replace_handler(config['selector'], '/', dict(GET=get))
+
+
 def map_to_tiddler(selector, path, bag=None, recipe=None):
     """
     Map the route given in path to the default routing for
