@@ -135,7 +135,10 @@ def replace_handler(selector, path, *args, **kwargs):
     Example:
     `replace_handler(config['selector'], '/', GET=show, PUT=update)`
     """
-    new_handler = args[0] if len(args) else kwargs # for backwards compatibility
+    if len(args):  # for backwards compatibility
+        new_handler = args[0]
+    else:
+        new_handler = kwargs
     for index, (regex, _) in enumerate(selector.mappings):
         if regex.match(path) is not None:
             selector.mappings[index] = (regex, new_handler)
