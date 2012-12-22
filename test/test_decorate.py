@@ -1,12 +1,13 @@
-
 import py.test
 
 from tiddlyweb.model.policy import UserRequiredError
-from tiddlywebplugins.utils import (entitle, do_html, require_role, 
+from tiddlywebplugins.utils import (entitle, do_html, require_role,
         require_any_user)
+
 
 STATUS = ''
 HEADERS = []
+
 
 def start_responser(status, headers, exc_info=None):
     global STATUS
