@@ -124,14 +124,18 @@ def ensure_bag(bag_name, store, policy_dict=None, description='', owner=None):
     return bag
 
 
-def replace_handler(selector, path, new_handler):
+def replace_handler(selector, path, *args, **kwargs):
     """
     Replace an existing path handler in the selector
     map with a new handler. Usually we want to add a
     new one, but sometimes we just want to replace.
-    This makes replacing easy. Courtesy of arno,
-    the selector author.
+    This makes replacing easy. Courtesy of Luke Arno,
+    the Selector author.
+
+    Example:
+    `replace_handler(config['selector'], '/', GET=show, PUT=update)`
     """
+    new_handler = args[0] if len(args) else kwargs # for backwards compatibility
     for index, (regex, _) in enumerate(selector.mappings):
         if regex.match(path) is not None:
             selector.mappings[index] = (regex, new_handler)
