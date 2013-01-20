@@ -1,5 +1,6 @@
 import py.test
 
+from tiddlyweb.config import config
 from tiddlyweb.model.policy import UserRequiredError
 from tiddlywebplugins.utils import (entitle, do_html, require_role,
         require_any_user)
@@ -17,22 +18,46 @@ def start_responser(status, headers, exc_info=None):
 
 
 def setup_module(module):
-    module.environ = {}
+    module.environ = {'tiddlyweb.config': config}
 
 
 def test_entitle():
 
     @entitle('monkey')
     def wsgi_app(environ, start_response):
-        pass
+        return ['monkey']
 
     assert 'tiddlyweb.title' not in environ
 
-    wsgi_app(environ, start_responser)
+    output = wsgi_app(environ, start_responser)
+    output = ''.join(output)
+    assert '<title>TiddlyWeb - monkey</title>' in output
 
     assert 'tiddlyweb.title' in environ
     assert environ['tiddlyweb.title'] == 'monkey'
 
+    @entitle('monkey')
+    def wsgi_app(environ, start_response):
+        return 'monkey'
+
+    output = wsgi_app(environ, start_responser)
+    output = ''.join(output)
+    assert '<title>TiddlyWeb - monkey</title>' in output
+    
+    assert 'tiddlyweb.title' in environ
+    assert environ['tiddlyweb.title'] == 'monkey'
+
+    @entitle('monkey')
+    def wsgi_app(environ, start_response):
+        yield 'oh hi'
+        return
+
+    output = wsgi_app(environ, start_responser)
+    output = ''.join(output)
+    assert '<title>TiddlyWeb - monkey</title>' in output
+    
+    assert 'tiddlyweb.title' in environ
+    assert environ['tiddlyweb.title'] == 'monkey'
 
 def test_do_html():
 

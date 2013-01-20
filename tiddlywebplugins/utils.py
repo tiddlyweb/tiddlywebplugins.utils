@@ -12,20 +12,41 @@ import os
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import UserRequiredError
+from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError
 
 
 def entitle(title):
     """
-    Decorator that sets tiddlyweb.title in environ, which
-    is used when HTMLPresenter is engaged.
+    Decorator that sets tiddlyweb.title environ and then 
+    engages the HTML serialization to present a header and
+    footer wrapper around the output.
     """
 
     def entangle(handler):
 
         def _entitle(environ, start_response, *args, **kwds):
-            output = handler(environ, start_response, *args, **kwds)
-            environ['tiddlyweb.title'] = title
+            try:
+                html = environ.get(
+                        'tiddlyweb.config', {}).get(
+                                'serializers', {}).get('text/html')[0]
+                html = Serializer(html, environ).serialization
+                environ['tiddlyweb.title'] = title
+                output = handler(environ, start_response, *args, **kwds)
+                header = html._header()
+                footer = html._footer()
+
+                try:
+                    output = header + output + footer
+                except TypeError:
+                    try:
+                        output = [header] + output + [footer]
+                    except TypeError:
+                        output = [header] + list(output) + [footer]
+
+            except (KeyError, IndexError, TypeError), exc:
+                environ['tiddlyweb.title'] = title
+                output = handler(environ, start_response, *args, **kwds)
             return output
 
         return _entitle
