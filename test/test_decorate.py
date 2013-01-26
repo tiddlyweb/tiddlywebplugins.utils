@@ -22,6 +22,10 @@ def setup_module(module):
 
 
 def test_entitle():
+    """
+    Each of these iterations of the same thing test
+    generator, string, list type outputs.
+    """
 
     @entitle('monkey')
     def wsgi_app(environ, start_response):
@@ -33,8 +37,9 @@ def test_entitle():
     output = ''.join(output)
     assert '<title>TiddlyWeb - monkey</title>' in output
 
+    # title is manually passed to _header() method, not via environ
     assert 'tiddlyweb.title' in environ
-    assert environ['tiddlyweb.title'] == 'monkey'
+    assert environ['tiddlyweb.title'] == ''
 
     @entitle('monkey')
     def wsgi_app(environ, start_response):
@@ -45,7 +50,7 @@ def test_entitle():
     assert '<title>TiddlyWeb - monkey</title>' in output
     
     assert 'tiddlyweb.title' in environ
-    assert environ['tiddlyweb.title'] == 'monkey'
+    assert environ['tiddlyweb.title'] == ''
 
     @entitle('monkey')
     def wsgi_app(environ, start_response):
@@ -57,7 +62,7 @@ def test_entitle():
     assert '<title>TiddlyWeb - monkey</title>' in output
     
     assert 'tiddlyweb.title' in environ
-    assert environ['tiddlyweb.title'] == 'monkey'
+    assert environ['tiddlyweb.title'] == ''
 
 def test_do_html():
 

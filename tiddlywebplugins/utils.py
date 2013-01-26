@@ -14,6 +14,7 @@ from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import UserRequiredError
 from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError
+from tiddlyweb.web.util import html_frame
 
 
 def entitle(title):
@@ -27,14 +28,8 @@ def entitle(title):
 
         def _entitle(environ, start_response, *args, **kwds):
             try:
-                html = environ.get(
-                        'tiddlyweb.config', {}).get(
-                                'serializers', {}).get('text/html')[0]
-                html = Serializer(html, environ).serialization
-                environ['tiddlyweb.title'] = title
+                header, footer = html_frame(environ, title)
                 output = handler(environ, start_response, *args, **kwds)
-                header = html._header()
-                footer = html._footer()
 
                 try:
                     output = header + output + footer
