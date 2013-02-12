@@ -12,14 +12,13 @@ import os
 
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.policy import UserRequiredError
-from tiddlyweb.serializer import Serializer
 from tiddlyweb.store import NoBagError
 from tiddlyweb.web.util import html_frame
 
 
 def entitle(title):
     """
-    Decorator that sets tiddlyweb.title environ and then 
+    Decorator that sets tiddlyweb.title environ and then
     engages the HTML serialization to present a header and
     footer wrapper around the output.
     """
@@ -39,7 +38,7 @@ def entitle(title):
                     except TypeError:
                         output = [header] + list(output) + [footer]
 
-            except (KeyError, IndexError, TypeError), exc:
+            except (KeyError, IndexError, TypeError):
                 environ['tiddlyweb.title'] = title
                 output = handler(environ, start_response, *args, **kwds)
             return output
